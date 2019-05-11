@@ -1,5 +1,6 @@
 #include "objects.h"
 
+//constructor descriptions 
 BackgrObj::BackgrObj(float x, float y):
 	x_(x),
 	y_(y)
@@ -19,36 +20,7 @@ Smoke::Smoke(float x, float y):
 	{
 		smokeIm_.loadFromFile		("images/smoke.png");
 		smokeIm_.createMaskFromColor	(sf::Color::Black,0);
-	}	
-
-void Smoke::draw(sf::RenderWindow& window)
-{
-	time_t currTime = 0;
-	time(&currTime);
-	sf::Texture texture;
-	texture.loadFromImage(smokeIm_);
-	smoke_.setTexture(texture);
-	smoke_.setPosition(x_, y_);
-	switch(currTime % 4)
-	{
-		case 3:
-			smoke_.setTextureRect(sf::IntRect(0, 100, 50, 100));
-			window.draw(smoke_);			
-			break;
-		case 2:
-			smoke_.setTextureRect(sf::IntRect(50, 100, 50, 100));
-			window.draw(smoke_);			
-			break;
-		case 1:
-			smoke_.setTextureRect(sf::IntRect(100, 100, 50, 100));
-			window.draw(smoke_);			
-			break;
-		case 0:
-			smoke_.setTextureRect(sf::IntRect(150, 100, 50, 100));
-			window.draw(smoke_);			
-			break;		
 	}
-}
 
 NatureObj::NatureObj(float x, float y, const std::string& imageName):
 	BackgrObj(x, y)
@@ -66,20 +38,66 @@ NatureObj::NatureObj(float x, float y, float width, float heigth, const std::str
 		objImage_.loadFromFile("images/" + imageName);
 	}
 
+/* here draw(...) funcs are described
+ *
+ * every class has it's way to be drawn
+ *
+ */
+void Smoke::draw(sf::RenderWindow& window)
+{
+	time_t currTime = 0;
+	time(&currTime);		/* now currTime == (number of seconds since 01.01.1970) 
+					 * when program is launched draw(window) works all the time 
+					 * because of "while" cycle in main
+					 */
+	sf::Texture texture;		//some important things to create sf::Sprite
+	texture.loadFromImage(smokeIm_);
+	smoke_.setTexture(texture);
+	smoke_.setPosition(x_, y_);
+	switch(currTime % 4)		// so depending on what time is it window.draw(smoke_) 
+					// will display different things (check images/smoke.png out)
+	{
+		case 3:
+			smoke_.setTextureRect(sf::IntRect(0, 100, 50, 100)); 
+			window.draw(smoke_);			
+			break;
+		case 2:
+			smoke_.setTextureRect(sf::IntRect(50, 100, 50, 100));
+			window.draw(smoke_);			
+			break;
+		case 1:
+			smoke_.setTextureRect(sf::IntRect(100, 100, 50, 100));
+			window.draw(smoke_);			
+			break;
+		case 0:
+			smoke_.setTextureRect(sf::IntRect(150, 100, 50, 100));
+			window.draw(smoke_);			
+			break;		
+	}
+}
+
+
+/*
+ *
+ *
+ */
 
 void NatureObj::draw(sf::RenderWindow& window)
 {
 	sf::Texture texture;
-	objImage_.createMaskFromColor	(IGNORED_COLOR,0);
+	objImage_.createMaskFromColor	(IGNORED_COLOR,0); // IGNORED_COLOR pixels are ignored
 	texture.loadFromImage		(objImage_);
 	texture.setSmooth		(true);
-	natureObj_.setScale		(sf::Vector2f(width_/(objImage_.getSize().x),heigth_/(objImage_.getSize().y)));
+	natureObj_.setScale		(sf::Vector2f(width_/(objImage_.getSize().x),heigth_/(objImage_.getSize().y)));//size of Spriteis set 
 	natureObj_.setTexture		(texture);
 	natureObj_.setPosition		(x_, y_);
 	window.draw			(natureObj_);
 }	
 
-void Star::draw(sf::RenderWindow& window)//star is blinking
+/* the same mechanics with time as in Smoke.draw(...)
+ */
+
+void Star::draw(sf::RenderWindow& window)
 {
 	time_t currTime = 0;
 	time(&currTime);
