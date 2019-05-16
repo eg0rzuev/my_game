@@ -14,12 +14,6 @@
 const sf::Color STAR_COLOR = sf::Color::White;
 const sf::Color IGNORED_COLOR = sf::Color(143,254,9); //pictures usually have bright green color in the background
 
-
-enum STARS
-{
-	STAR_SIZE  = 5
-};	       	
-
 /* parent virtual class 
  *
  * for objects that will be on background
@@ -27,6 +21,7 @@ enum STARS
  * constructor sets x_, y_ coordinates 
  *
  */
+
 class BackgrObj
 {
 	public:
@@ -74,6 +69,10 @@ class NatureObj: public BackgrObj//i.e. planets or mountains
 class Star: public BackgrObj//stars that will blink in the sky
 {
 	public:
+		enum STARS
+		{
+			STAR_SIZE  = 5
+		};	       	
 		Star(float x, float y, int freq);
 		void draw(sf::RenderWindow&) override;//star is not always on the screen, it blinks
 	private:
@@ -96,6 +95,12 @@ class Smoke: public BackgrObj//smoke from the todo spaceship
 	private:
 		sf::Image	smokeIm_;
 		sf::Sprite	smoke_;	
-};		
+};	
+
+/*class Bullet
+{
+	public:
+		Bullet(Vector
+}*/
 
 #endif //MY_GAME_OBJECTS

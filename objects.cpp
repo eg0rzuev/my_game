@@ -15,11 +15,13 @@ Star::Star(float x, float y, int freq):
 		star_.setPosition(x_, y_);
 	}
 
-Smoke::Smoke(float x, float y):
+Smoke::Smoke(float x, float y /*float width, float heigth*/):
 	BackgrObj(x, y)
+	//width_(width),
+	//heigth_(heigth)
 	{
-		smokeIm_.loadFromFile		("images/smoke.png");
-		smokeIm_.createMaskFromColor	(sf::Color::Black,0);
+		smokeIm_.loadFromFile		( "images/smoke.png");
+		smokeIm_.createMaskFromColor	(sf::Color::Black, 0);
 	}
 
 NatureObj::NatureObj(float x, float y, const std::string& imageName):
@@ -43,6 +45,7 @@ NatureObj::NatureObj(float x, float y, float width, float heigth, const std::str
  * every class has it's way to be drawn
  *
  */
+
 void Smoke::draw(sf::RenderWindow& window)
 {
 	time_t currTime = 0;
@@ -58,19 +61,19 @@ void Smoke::draw(sf::RenderWindow& window)
 					// will display different things (check images/smoke.png out)
 	{
 		case 3:
-			smoke_.setTextureRect(sf::IntRect(0, 100, 50, 100)); 
+			smoke_.setTextureRect(sf::IntRect(0, 0, 20, 40)); 
 			window.draw(smoke_);			
 			break;
 		case 2:
-			smoke_.setTextureRect(sf::IntRect(50, 100, 50, 100));
+			smoke_.setTextureRect(sf::IntRect(20, 0, 20, 40));
 			window.draw(smoke_);			
 			break;
 		case 1:
-			smoke_.setTextureRect(sf::IntRect(100, 100, 50, 100));
+			smoke_.setTextureRect(sf::IntRect(40, 0, 20, 40));
 			window.draw(smoke_);			
 			break;
 		case 0:
-			smoke_.setTextureRect(sf::IntRect(150, 100, 50, 100));
+			smoke_.setTextureRect(sf::IntRect(60, 0, 20, 40));
 			window.draw(smoke_);			
 			break;		
 	}
@@ -88,7 +91,7 @@ void NatureObj::draw(sf::RenderWindow& window)
 	objImage_.createMaskFromColor	(IGNORED_COLOR,0); // IGNORED_COLOR pixels are ignored
 	texture.loadFromImage		(objImage_);
 	texture.setSmooth		(true);
-	natureObj_.setScale		(sf::Vector2f(width_/(objImage_.getSize().x),heigth_/(objImage_.getSize().y)));//size of Spriteis set 
+	natureObj_.setScale		(width_/(objImage_.getSize().x),heigth_/(objImage_.getSize().y));//size of Spriteis set 
 	natureObj_.setTexture		(texture);
 	natureObj_.setPosition		(x_, y_);
 	window.draw			(natureObj_);

@@ -14,6 +14,15 @@
 #include <SFML/Network.hpp>
 #include <SFML/System.hpp>
 #include <ctime>
+#include <iostream>
+#include <cmath>
+#include <fstream>
+#include <cstdlib>
+#include <list>
+#include <vector>
+#include "objects.h"
+#include "subjects.h"
+#include "vector_2d.hpp"
 
 /* map_params describe map sizes
  */
@@ -24,11 +33,28 @@ enum map_params
     SQUARE_SIZE = 30
 };
 
+#define NEW    new   (__func__, __LINE__)
+
+#define DELETE_BR(p)                                                                                \
+    do{                                                                                             \
+        fout << "Delete[] called in function " << __func__ << ", line is " << __LINE__ << " \n";    \
+        delete[] p					                                       ;    \
+    }while(0)	
+
+#define DELETE(p)                                                                                 \
+    do{                                                                                           \
+        fout << "Delete called in function " << __func__ << ", line is " << __LINE__ << " \n";    \
+        delete p					                                     ;    \
+    }while(0)											   
+       
+
 /* this sf::String array describes how map look like
  * i.e. ' ' symbol is for dark space
  * 	r   is for different space texure
  * 	I'm not quite sure whether this has to be in this header file
  */
+
+static std::ofstream fout("Log.txt");
 
 const sf::String mapTile[MAP_HEIGTH] ={
         " rrrrrrrrrrrrr                          ",
@@ -58,5 +84,11 @@ const sf::String mapTile[MAP_HEIGTH] ={
  * description is given in textures.cpp
  */
 void drawBackGround(const std::string& pathToTexture, sf::RenderWindow& window);
+
+//operators overload in operators.cpp
+void* operator new     (size_t size, const char* func, int line);
+void* operator new[]   (size_t size, const char* func, int line);
+void  operator delete  (void* p) noexcept;
+void  operator delete[](void* p) noexcept;
 
 #endif //MY_GAME_MAIN_HEADER_H
