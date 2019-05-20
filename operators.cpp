@@ -20,6 +20,7 @@ void operator delete(void* p)   noexcept
 {
     free(p);
 }
+
 void operator delete[](void* p) noexcept
 {
     free(p);

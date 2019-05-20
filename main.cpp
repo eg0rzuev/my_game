@@ -47,7 +47,7 @@ int main() {
 		bckgrObj.push_back(NEW Star(100 + rand()%900, 100 +rand()%301, 3 + rand()%10));		       	
 	}	
 
-	for(int i = 0; i < 5; i++)
+	for(int i = 0; i < 5 + rand()%6; i++)
 	{
 		asteroids.push_back(NEW Asteroid(1100 + rand()%50, rand()%600, 1, 80, 80, "asteroid.png", spaceship));
 	}
@@ -85,6 +85,7 @@ int main() {
 		{
 			(*objIt) -> draw(window);
 		}
+
 		for(astIt = asteroids.begin(); astIt != asteroids.end(); astIt++)
 		{
 			(*astIt) -> update(time);
@@ -93,22 +94,27 @@ int main() {
 		}
 		spaceship.update(time);
 		window.draw(spaceship.sprite_);
+
 		for(entIt = entities.begin(); entIt != entities.end(); entIt++)
 		{
 			(*entIt) -> update(time);
-				window.draw((*entIt) -> sprite_);
+			window.draw((*entIt) -> sprite_);
 		}
 		
-		for(entIt = entities.begin(); entIt != entities.end(); entIt++)
 		for(astIt = asteroids.begin(); astIt != asteroids.end(); astIt++)
+		for(entIt = entities.begin(); entIt != entities.end(); entIt++)
 		{
-			if(checkCol((*entIt), (*astIt)))
+			if(checkCol((*entIt), (*astIt)) || (*astIt) -> getX() < 0)
 			{
-
+				//std::cout << (*astIt) -> getX() << "  " << std::endl;
 				(*astIt) -> alive_ = false;
 				(*entIt) -> alive_ = false;
 			}
+			if((*entIt) -> getX() < 0 || (*entIt) -> getX() > 1250)
+				(*entIt) -> alive_ = false;
 		}
+
+		
 		for(entIt = entities.begin(); entIt != entities.end();)
 		{
 			Entity* b = *entIt;
@@ -119,6 +125,7 @@ int main() {
 			}
 			else entIt ++;	
 		}
+
 		for(astIt = asteroids.begin(); astIt != asteroids.end();)
 		{
 			Entity* b = *astIt;
@@ -127,7 +134,14 @@ int main() {
 				astIt = asteroids.erase(astIt);
 				DELETE(b);
 			}
-			else astIt ++;	
+			else astIt++;	
+		}
+		if(asteroids.begin() == asteroids.end())
+		{
+			for(int i = 0; i < 5 + rand()%6; i++)
+			{
+				asteroids.push_back(NEW Asteroid(1100 + rand()%50, rand()%600, 1, 80, 80, "asteroid.png", spaceship));
+			}
 		}
 		window.display();	
     }
