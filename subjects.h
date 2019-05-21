@@ -9,25 +9,24 @@
 #include "MAIN_HEADER.h"
 #include "vector_2d.hpp"
 #define BULLET_SPEED 0.0004
-#define ASTEROID_SPEED 0.0001
+#define ASTEROID_SPEED 0.0002
 class Entity
 {
 	public:
 		Entity(float x, float y, int health, float width, float height, const std::string& imageName);
-    		virtual void update(float time) = 0;
-		sf::Sprite		sprite_; 
-		sf::Texture		texture_;
-		float			getX();
-		float			getY();
-		virtual Vector_2d<float> getDir(){}
-	//protected:
-    		float 			x_;
-    		float 			y_;
-		float 			width_;
-		float			heigth_;
-		int 			health_;
-		bool 			alive_;
-		sf::Image		image_;
+    		virtual void 				update(float time) = 0;
+		sf::Sprite				sprite_; 
+		sf::Texture				texture_;
+		virtual const float			getX() const;
+		virtual const float			getY() const ;
+		virtual Vector_2d<float> 		getDir(){}
+    		float 					x_;
+    		float 					y_;
+		float 					width_;
+		float					heigth_;
+		int 					health_;
+		bool 					alive_;
+		sf::Image				image_;
 };
 
 class Spaceship: public Entity
@@ -36,8 +35,8 @@ class Spaceship: public Entity
 		Spaceship		(float x, float y, int health, float width, float heigth, const std::string& imageName);
 		void 			update(float time) override;
 		bool 			isShoot_;
-		const float		getX() const;
-		const float		getY() const;
+		const float		getX() const override;
+		const float		getY() const override;
 	private:
 		void 			shoot();
 		time_t 			prevTime_;

@@ -1,9 +1,7 @@
-//
-// Created by egor on 4/30/19.
-//
 
 #include "subjects.h"
 #include <ctime>
+
 Entity::Entity(float x, float y, int health, float width, float heigth, const std::string& imageName):
 	x_(x),
 	y_(y),
@@ -19,12 +17,12 @@ Entity::Entity(float x, float y, int health, float width, float heigth, const st
 		sprite_.setPosition(x_,y_);
 	}
 
-float Entity::getX()
+const float Entity::getX() const
 {
 	return sprite_.getPosition().x;
 }	
 
-float Entity::getY()
+const float Entity::getY() const
 {
 	return sprite_.getPosition().y;
 }
@@ -48,7 +46,7 @@ Bullet::Bullet(float x, float y, int health, float width, float height, const st
 
 Asteroid::Asteroid(float x, float y, int health, float width, float height, const std::string& imageName, const Spaceship& spcshp): 
 	Entity(x, y, health, width, height, imageName),	
-	dir_(spcshp.getX()- x_, spcshp.getY() - y_)
+	dir_(spcshp.getX() - x_, spcshp.getY() - y_)
 	{
 		sprite_.setScale(width_/image_.getSize().x, heigth_/image_.getSize().y);
 		sprite_.rotate(dir_.getAngle());
@@ -63,7 +61,7 @@ void Spaceship::update(float time)
 void Spaceship::control()
 {
 	time_t timeCurr = clock();
-	if(sf::Mouse::isButtonPressed(sf::Mouse::Left) && (float)(timeCurr - prevTime_)/CLOCKS_PER_SEC > 0.3)
+	if(sf::Mouse::isButtonPressed(sf::Mouse::Left) && (float)(timeCurr - prevTime_)/CLOCKS_PER_SEC > 0.6)
     	{
 		isShoot_ = true;
 		prevTime_ = timeCurr;
@@ -74,12 +72,12 @@ void Spaceship::control()
 
 const float Spaceship::getX() const
 {
-	return x_;
+	return x_ + width_/2;
 }
 
 const float Spaceship::getY() const
 {
-	return y_;
+	return y_ + heigth_/2;
 }
 
 void Bullet::update(float time)
@@ -97,6 +95,7 @@ Vector_2d<float> Asteroid::getDir()
 {
 	return dir_;
 }
+
 /*
 float Asteroid::getWidth()
 {
