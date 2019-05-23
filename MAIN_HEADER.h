@@ -23,6 +23,10 @@
 #include "objects.h"
 #include "subjects.h"
 #include "vector_2d.hpp"
+#include "menu.h"
+#include <stdio.h>
+#include <string.h>
+//#include "mpi.h"
 
 /* map_params describe map sizes
  */
@@ -30,7 +34,8 @@ enum map_params
 {
     MAP_HEIGTH = 21,
     MAP_WIDTH  = 40,
-    SQUARE_SIZE = 30
+    SQUARE_SIZE = 30,
+    GROUND_HEIGTH = 7
 };
 
 #define NEW    new   (__func__, __LINE__)
@@ -55,6 +60,7 @@ enum map_params
  */
 
 static std::ofstream fout("Log.txt");
+//static std::ofstream ast_stat("asteroids.txt");
 
 const sf::String mapTile[MAP_HEIGTH] ={
         " rrrrrrrrrrrrr                          ",
