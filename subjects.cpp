@@ -61,7 +61,7 @@ void Spaceship::update(float time)
 void Spaceship::control()
 {
 	time_t timeCurr = clock();
-	if(sf::Mouse::isButtonPressed(sf::Mouse::Left) && (float)(timeCurr - prevTime_)/CLOCKS_PER_SEC > 0.6)
+	if(sf::Mouse::isButtonPressed(sf::Mouse::Left) && (float)(timeCurr - prevTime_)/CLOCKS_PER_SEC > 0.4)
     	{
 		isShoot_ = true;
 		prevTime_ = timeCurr;
@@ -115,4 +115,14 @@ bool checkCol(Entity* bullet, Entity* asteroid)
 	if(Abullet * AB >= 0 && (Abullet * AB)/AB.abs() <= AB.abs() && Abullet * AC >= 0 && (Abullet * AC)/AC.abs() <= AC.abs())
 		return true;
 	return false;
-}	
+}
+
+/*bool checkDotInRect(float dotX, float dotY, float rectVertX, float rectVertY, float angle)
+{
+	Vector_2d<float> AB(AST::WIDTH * cos(angle), AST::WIDTH * sin(angle));
+	Vector_2d<float> AC(-AST::HEIGTH * sin(angle), AST::HEIGTH * cos(angle));
+	Vector_2d<float> Adot(dotX - rectVertX, dotY - rectVertY);
+	if(Adot * AB >= 0 && (Adot * AB)/AB.abs() <= AB.abs() && Adot * AC >= 0 && (Adot * AC)/AC.abs() <= AC.abs())
+		return true;
+	return false;
+}*/	

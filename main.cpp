@@ -17,14 +17,33 @@
  * 	MAIN_HEADER.h
  * 	objects.h objects.cpp
  * 	textures.cpp
- *	todo subjects.cpp subjects.h
+ *	subjects.cpp subjects.h
+ *	menu.cpp menu.h
+ *
+ *	images/...
+ *
  */
 
-int main() {
-    	sf::RenderWindow window(sf::VideoMode(MAP_WIDTH * SQUARE_SIZE , MAP_HEIGTH * SQUARE_SIZE), "Game", sf::Style::Close);
-	sf::Clock clock;
+int main(int argc, char* argv[]) { 
+
+	int myRank = 0;
+	int size = 0;
 	srand(time(nullptr));
 
+	/* here objects from background are initilised
+	 * their description is given in objects.h objects.cpp
+	 *
+	 */	
+
+/*	MPI_Status status;
+	MPI_Init(&argc, &argv);
+	MPI_Comm_rank(MPI_COMM_WORLD, &myRank);
+	MPI_Comm_size(MPI_COMM_WORLD, &size);*/
+
+//	if(myRank == 0)
+//	{
+
+	//std::ofstream fout("Log.txt");	
 	std::list<Entity*> 			entities;
 	std::list<Entity*>			asteroids;
 	std::vector<BackgrObj*>			bckgrObj;
@@ -33,58 +52,74 @@ int main() {
 	std::list<Entity*>::iterator 		astIt;
 	std::vector<BackgrObj*>::iterator 	objIt;
 
-	/* here objects from background are initilised
-	 * their description is given in objects.h objects.cpp
-	 *
-	 */	
-
 	Spaceship spaceship(50, 350, 5, 200, 200, "spaceship.png");
-	
+
 	for(int i = 0; i < 8; i++)
-	{
-		bckgrObj.push_back(NEW NatureObj(300 + rand()%801,  500 + rand()%100, 20   + rand()%6, 
+	{	
+		bckgrObj.push_back(NEW NatureObj(200 + rand()%801,  500 + rand()%100, 20   + rand()%6, 
 						  20 + rand()%6, "rock" + std::to_string(1 + rand()%3) + ".png"));
 		bckgrObj.push_back(NEW Star(100 + rand()%900, 100 +rand()%301, 3 + rand()%10));		       	
 	}	
+	
+/*	int randInt = rand()%2;
 
-	for(int i = 0; i < 5 + rand()%6; i++)
+	for(int i = 0; i < randInt; i++)
 	{
 		asteroids.push_back(NEW Asteroid(1100 + rand()%50, rand()%600, 1, 80, 80, "asteroid.png", spaceship));
-	}
 
+	}*/
+
+
+	sf::RenderWindow window(sf::VideoMode(MAP_WIDTH * SQUARE_SIZE , MAP_HEIGTH * SQUARE_SIZE), "Game", sf::Style::Close);
+	sf::Clock clock;
+	Menu menu(window, "back.png");
+	MainMenu mainMenu(window, "start.png", "info.png");
+	
 	bckgrObj.push_back(NEW NatureObj(0, 250, 1200, 202, "mountains.png"));
 	bckgrObj.push_back(NEW NatureObj(900, 100, 150, 100, "planet_1.png"));
 	bckgrObj.push_back(NEW Smoke	(230, 440));
 	
-
+	mainMenu.show();
+	clock.restart();
 	while (window.isOpen())
     	{
 		float time = clock.getElapsedTime().asMicroseconds();
 		clock.restart();
-	        	sf::Event event;
+	        sf::Event event;
+
         	while (window.pollEvent(event))
         	{
-            		if (event.type == sf::Event::Closed)
+            		if(event.type == sf::Event::Closed)
                			window.close();
 			if(spaceship.isShoot_)
 			{
 				spaceship.isShoot_ = false;
-				entities.push_back(NEW Bullet(spaceship.getX() + 100, spaceship.getY(), 1, 10, 10, "bullet.png", window));
-			}	
+				entities.push_back(NEW Bullet(spaceship.Entity::getX() + spaceship.width_/2, spaceship.Entity::getY(),
+			        1, 10, 10, "bullet.png", window));
+			}
+			if(event.type == sf::Event::KeyPressed)
+			{
+				if(event.key.code == sf::Keyboard::Escape)
+				{
+					menu.show();
+					clock.restart();
+				}
+			}			
        		}
+
         	window.clear();
 		drawBackGround("map_t.png", window);
 
 		// here everything is drawn in window
 		//
-		// !!!
-		// todo this is too large and new classes with some methods are required
-		// !!!
-		
-        	for(objIt = bckgrObj.begin(); objIt != bckgrObj.end(); objIt++)
+
+	        for(objIt = bckgrObj.begin(); objIt != bckgrObj.end(); objIt++)
 		{
 			(*objIt) -> draw(window);
 		}
+
+		spaceship.update(time);
+		window.draw(spaceship.sprite_);
 
 		for(astIt = asteroids.begin(); astIt != asteroids.end(); astIt++)
 		{
@@ -92,8 +127,6 @@ int main() {
 			window.draw((*astIt) -> sprite_);
 			
 		}
-		spaceship.update(time);
-		window.draw(spaceship.sprite_);
 
 		for(entIt = entities.begin(); entIt != entities.end(); entIt++)
 		{
@@ -104,9 +137,13 @@ int main() {
 		for(astIt = asteroids.begin(); astIt != asteroids.end(); astIt++)
 		for(entIt = entities.begin(); entIt != entities.end(); entIt++)
 		{
+
 			if(checkCol((*entIt), (*astIt)) || (*astIt) -> getX() < 0)
 			{
-				//std::cout << (*astIt) -> getX() << "  " << std::endl;
+				std::string result("asteroid destroyed!");
+				//MPI_Send(result.c_str(), result.size(), MPI_CHAR, 1, 0, MPI_COMM_WORLD);		
+				//int message = 333;
+				//MPI_Send(&message, sizeof(int), MPI_INT, 1, 0, MPI_COMM_WORLD);		
 				(*astIt) -> alive_ = false;
 				(*entIt) -> alive_ = false;
 			}
@@ -144,7 +181,8 @@ int main() {
 			}
 		}
 		window.display();	
-    }
+    	}
 
-    return 0;
+	
+    	return 0;
 }
